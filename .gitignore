@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+venv/
+
+# Build outputs (large generated files)
+js/data.js
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Source HTML (keep only processed JSON)
+*.html
+!index.html
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
