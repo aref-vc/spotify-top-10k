@@ -290,7 +290,7 @@ main {
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
   padding: 24px;
-  min-height: 400px;
+  min-height: 480px;
 }
 
 .chart-title {
@@ -457,7 +457,7 @@ main {
   }
 
   .chart-container {
-    min-height: 350px;
+    min-height: 420px;
     padding: 16px;
   }
 }
