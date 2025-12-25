@@ -299,7 +299,15 @@ main {
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 20px;
+  margin-bottom: 6px;
+}
+
+.chart-question {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin-bottom: 16px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border-subtle);
 }
