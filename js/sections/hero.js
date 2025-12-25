@@ -121,6 +121,7 @@ function renderPopularityDist() {
     .attr('y', dims.innerHeight + 45)
     .attr('text-anchor', 'middle')
     .attr('fill', Utils.colors.text.tertiary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.7rem')
     .text('Popularity Score');
 }
@@ -197,6 +198,7 @@ function renderTopTracks() {
     .attr('text-anchor', 'end')
     .attr('dominant-baseline', 'middle')
     .attr('fill', Utils.colors.text.secondary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.65rem')
     .text(d => {
       const name = d.track;
@@ -210,7 +212,7 @@ function renderAlbumTypes() {
   if (!container) return;
 
   const data = Filters.isFiltered() ? Filters.getFilteredAlbumTypes() : DATA.albumTypes;
-  const dims = Utils.getChartDimensions(container);
+  const dims = Utils.getChartDimensions(container, { bottom: 70 });
   const { svg, g } = Utils.createSvg(container, dims);
 
   if (data.length === 0) {
@@ -219,6 +221,7 @@ function renderAlbumTypes() {
       .attr('y', dims.innerHeight / 2)
       .attr('text-anchor', 'middle')
       .attr('fill', Utils.colors.text.tertiary)
+      .style('font-family', Utils.font)
       .text('No data for current filters');
     return;
   }
@@ -272,29 +275,15 @@ function renderAlbumTypes() {
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'middle')
     .attr('fill', Utils.colors.text.primary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.75rem')
     .text('Album Types');
 
-  // Legend
-  const legend = g.append('g')
-    .attr('transform', `translate(${dims.innerWidth - 100}, 20)`);
-
-  data.forEach((d, i) => {
-    const legendItem = legend.append('g')
-      .attr('transform', `translate(0, ${i * 25})`);
-
-    legendItem.append('rect')
-      .attr('width', 12)
-      .attr('height', 12)
-      .attr('fill', colors[d.type] || '#666')
-      .attr('rx', 2);
-
-    legendItem.append('text')
-      .attr('x', 18)
-      .attr('y', 10)
-      .attr('fill', Utils.colors.text.secondary)
-      .style('font-size', '0.7rem')
-      .text(`${d.type} (${d.percent}%)`);
+  // Legend at bottom with circles
+  Utils.addLegend(g, data, dims, {
+    colorFn: d => colors[d.type] || '#666',
+    labelFn: d => d.type,
+    valueFn: d => `${d.percent}%`
   });
 }
 

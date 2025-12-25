@@ -96,6 +96,7 @@ function renderTimelineChart() {
     .attr('y', d => yScale(d.count) - 8)
     .attr('text-anchor', 'middle')
     .attr('fill', Utils.colors.text.secondary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.65rem')
     .style('opacity', 0)
     .text(d => Utils.formatNumber(d.count))
@@ -172,6 +173,7 @@ function renderEraDominance() {
         .attr('y', 0)
         .attr('text-anchor', 'middle')
         .attr('fill', Utils.getDecadeColor(d.decade))
+        .style('font-family', Utils.font)
         .style('font-size', '0.7rem')
         .style('font-weight', '600')
         .text(d.label);
@@ -181,6 +183,7 @@ function renderEraDominance() {
         .attr('y', 18)
         .attr('text-anchor', 'middle')
         .attr('fill', Utils.colors.text.tertiary)
+        .style('font-family', Utils.font)
         .style('font-size', '0.6rem')
         .text(`${d.percent}%`);
     }
@@ -192,6 +195,7 @@ function renderEraDominance() {
     .attr('y', 30)
     .attr('text-anchor', 'middle')
     .attr('fill', Utils.colors.text.secondary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.8rem')
     .text('Share of Top 10,000 by Decade');
 }
@@ -281,6 +285,7 @@ function renderLongevity() {
     .attr('text-anchor', 'end')
     .attr('dominant-baseline', 'middle')
     .attr('fill', Utils.colors.text.secondary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.55rem')
     .text(d => {
       const name = d.track;
@@ -296,6 +301,7 @@ function renderLongevity() {
     .attr('y', (d, i) => yScale(i) + yScale.bandwidth() / 2)
     .attr('dominant-baseline', 'middle')
     .attr('fill', Utils.colors.text.tertiary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.55rem')
     .style('opacity', 0)
     .text(d => d.year)
@@ -372,6 +378,7 @@ function renderEraComparison() {
       .attr('x', 0)
       .attr('y', y - 10)
       .attr('fill', d.color)
+      .style('font-family', Utils.font)
       .style('font-size', '0.8rem')
       .style('font-weight', '600')
       .text(d.era);
@@ -382,6 +389,7 @@ function renderEraComparison() {
       .attr('y', y - 10)
       .attr('text-anchor', 'end')
       .attr('fill', Utils.colors.text.tertiary)
+      .style('font-family', Utils.font)
       .style('font-size', '0.7rem')
       .text(`${Utils.formatNumber(d.count)} tracks (${Math.round(100 * percent)}%)`);
 
@@ -391,6 +399,7 @@ function renderEraComparison() {
         .attr('x', 15)
         .attr('y', y + barHeight / 2 + 5)
         .attr('fill', Utils.colors.bg.primary)
+        .style('font-family', Utils.font)
         .style('font-size', '0.8rem')
         .style('font-weight', '600')
         .style('opacity', 0)

@@ -5,6 +5,12 @@
 
 const Utils = {
   // ============================================
+  // FONT
+  // ============================================
+
+  font: "'JetBrains Mono', monospace",
+
+  // ============================================
   // COLOR PALETTES
   // ============================================
 
@@ -134,6 +140,7 @@ const Utils = {
   styleAxis(axis, options = {}) {
     axis.selectAll('text')
       .attr('fill', this.colors.text.tertiary)
+      .style('font-family', this.font)
       .style('font-size', '0.7rem');
 
     axis.selectAll('line, path')
@@ -275,6 +282,71 @@ const Utils = {
 
       g.select('.grid-y .domain').remove();
     }
+  },
+
+  // ============================================
+  // LEGEND (Bottom, Circles)
+  // ============================================
+
+  addLegend(g, data, dims, options = {}) {
+    const {
+      colorFn = (d, i) => this.getChartColor(i),
+      labelFn = d => d.label || d.type || d.name,
+      valueFn = null
+    } = options;
+
+    // Calculate legend dimensions
+    const circleRadius = 5;
+    const itemGap = 20;
+    const legendY = dims.innerHeight + 35;
+
+    // Calculate total width needed
+    const items = data.map((d, i) => {
+      const label = labelFn(d);
+      const value = valueFn ? ` (${valueFn(d)})` : '';
+      return { data: d, label: label + value, color: colorFn(d, i) };
+    });
+
+    // Estimate text widths (rough: 7px per char)
+    let totalWidth = 0;
+    items.forEach(item => {
+      item.width = item.label.length * 6 + circleRadius * 2 + 8;
+      totalWidth += item.width + itemGap;
+    });
+    totalWidth -= itemGap; // Remove last gap
+
+    // Center the legend
+    let xOffset = (dims.innerWidth - totalWidth) / 2;
+
+    const legend = g.append('g')
+      .attr('class', 'legend')
+      .attr('transform', `translate(0, ${legendY})`);
+
+    items.forEach((item, i) => {
+      const itemG = legend.append('g')
+        .attr('transform', `translate(${xOffset}, 0)`);
+
+      // Circle (no border)
+      itemG.append('circle')
+        .attr('cx', circleRadius)
+        .attr('cy', 0)
+        .attr('r', circleRadius)
+        .attr('fill', item.color);
+
+      // Label
+      itemG.append('text')
+        .attr('x', circleRadius * 2 + 8)
+        .attr('y', 0)
+        .attr('dominant-baseline', 'middle')
+        .attr('fill', this.colors.text.secondary)
+        .style('font-family', this.font)
+        .style('font-size', '0.65rem')
+        .text(item.label);
+
+      xOffset += item.width + itemGap;
+    });
+
+    return legend;
   }
 };
 

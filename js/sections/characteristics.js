@@ -110,6 +110,7 @@ function renderDurationDist() {
     .attr('y', dims.innerHeight + 45)
     .attr('text-anchor', 'middle')
     .attr('fill', Utils.colors.text.tertiary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.7rem')
     .text('Duration');
 }
@@ -331,6 +332,7 @@ function renderOptimalDuration() {
     .attr('y', dims.innerHeight + 45)
     .attr('text-anchor', 'middle')
     .attr('fill', Utils.colors.text.tertiary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.7rem')
     .text('Duration');
 
@@ -340,6 +342,7 @@ function renderOptimalDuration() {
     .attr('y', -35)
     .attr('text-anchor', 'middle')
     .attr('fill', Utils.colors.text.tertiary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.7rem')
     .text('Popularity');
 }
@@ -431,6 +434,7 @@ function renderDuplicates() {
     .attr('text-anchor', 'end')
     .attr('dominant-baseline', 'middle')
     .attr('fill', Utils.colors.text.secondary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.55rem')
     .text(d => {
       const name = d.track;
@@ -446,6 +450,7 @@ function renderDuplicates() {
     .attr('y', (d, i) => yScale(i) + yScale.bandwidth() / 2)
     .attr('dominant-baseline', 'middle')
     .attr('fill', Utils.colors.text.tertiary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.6rem')
     .style('opacity', 0)
     .text(d => Utils.formatNumber(d.copies))
@@ -460,6 +465,7 @@ function renderDuplicates() {
     .attr('y', dims.innerHeight + 40)
     .attr('text-anchor', 'middle')
     .attr('fill', Utils.colors.text.tertiary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.7rem')
     .text('Number of Versions (ISRC Duplicates)');
 }

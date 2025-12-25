@@ -96,6 +96,7 @@ function renderTopArtists() {
     .attr('text-anchor', 'end')
     .attr('dominant-baseline', 'middle')
     .attr('fill', Utils.colors.text.secondary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.6rem')
     .text(d => d.name.length > 16 ? d.name.substring(0, 16) + '...' : d.name);
 
@@ -108,6 +109,7 @@ function renderTopArtists() {
     .attr('y', d => yScale(d.name) + yScale.bandwidth() / 2)
     .attr('dominant-baseline', 'middle')
     .attr('fill', Utils.colors.text.tertiary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.6rem')
     .style('opacity', 0)
     .text(d => d.trackCount)
@@ -125,16 +127,17 @@ function renderCollaborations() {
   const songs = Filters.getFilteredSongs();
   const solo = songs.filter(s => s.artistCount === 1).length;
   const collab = songs.filter(s => s.artistCount > 1).length;
+  const total = solo + collab;
 
   const data = [
-    { label: 'Solo', count: solo, color: Utils.colors.primary },
-    { label: 'Collaboration', count: collab, color: Utils.colors.cyan }
+    { label: 'Solo', count: solo, color: Utils.colors.primary, percent: total > 0 ? Math.round(100 * solo / total) : 0 },
+    { label: 'Collab', count: collab, color: Utils.colors.cyan, percent: total > 0 ? Math.round(100 * collab / total) : 0 }
   ];
 
-  const dims = Utils.getChartDimensions(container);
+  const dims = Utils.getChartDimensions(container, { bottom: 70 });
   const { svg, g } = Utils.createSvg(container, dims);
 
-  const radius = Math.min(dims.innerWidth, dims.innerHeight) / 2 - 40;
+  const radius = Math.min(dims.innerWidth, dims.innerHeight) / 2 - 30;
   const centerX = dims.innerWidth / 2;
   const centerY = dims.innerHeight / 2;
 
@@ -161,11 +164,9 @@ function renderCollaborations() {
     .attr('stroke-width', 3)
     .style('opacity', 0)
     .on('mouseenter', (event, d) => {
-      const total = solo + collab;
-      const percent = total > 0 ? Math.round(100 * d.data.count / total) : 0;
       Utils.showTooltip(`
         <div class="tooltip-title">${d.data.label}</div>
-        <div class="tooltip-value">${Utils.formatNumber(d.data.count)} tracks (${percent}%)</div>
+        <div class="tooltip-value">${Utils.formatNumber(d.data.count)} tracks (${d.data.percent}%)</div>
       `, event);
     })
     .on('mouseleave', () => Utils.hideTooltip())
@@ -174,13 +175,13 @@ function renderCollaborations() {
     .style('opacity', 1);
 
   // Center stats
-  const total = solo + collab;
   const collabPercent = total > 0 ? Math.round(100 * collab / total) : 0;
 
   donutG.append('text')
     .attr('text-anchor', 'middle')
     .attr('y', -8)
     .attr('fill', Utils.colors.text.primary)
+    .style('font-family', Utils.font)
     .style('font-size', '1.5rem')
     .style('font-weight', '600')
     .text(`${collabPercent}%`);
@@ -189,29 +190,15 @@ function renderCollaborations() {
     .attr('text-anchor', 'middle')
     .attr('y', 15)
     .attr('fill', Utils.colors.text.tertiary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.7rem')
     .text('Collaborations');
 
-  // Legend
-  const legend = g.append('g')
-    .attr('transform', `translate(${dims.innerWidth - 120}, ${dims.innerHeight - 60})`);
-
-  data.forEach((d, i) => {
-    const legendItem = legend.append('g')
-      .attr('transform', `translate(0, ${i * 25})`);
-
-    legendItem.append('rect')
-      .attr('width', 12)
-      .attr('height', 12)
-      .attr('fill', d.color)
-      .attr('rx', 2);
-
-    legendItem.append('text')
-      .attr('x', 18)
-      .attr('y', 10)
-      .attr('fill', Utils.colors.text.secondary)
-      .style('font-size', '0.7rem')
-      .text(d.label);
+  // Legend at bottom with circles
+  Utils.addLegend(g, data, dims, {
+    colorFn: d => d.color,
+    labelFn: d => d.label,
+    valueFn: d => `${d.percent}%`
   });
 }
 
@@ -273,6 +260,7 @@ function renderDiversity() {
     .attr('x', 4)
     .attr('y', 14)
     .attr('fill', Utils.colors.bg.primary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.55rem')
     .style('font-weight', '600')
     .text(d => {
@@ -371,6 +359,7 @@ function renderFeatured() {
     .attr('text-anchor', 'end')
     .attr('dominant-baseline', 'middle')
     .attr('fill', Utils.colors.text.secondary)
+    .style('font-family', Utils.font)
     .style('font-size', '0.6rem')
     .text(d => d.name.length > 15 ? d.name.substring(0, 15) + '...' : d.name);
 }
