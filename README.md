@@ -1,6 +1,8 @@
 # Spotify Top 10K Dashboard
 
-A data visualization dashboard exploring Spotify's Top 10,000 most popular songs, spanning 73 years of music history from 1952 to 2025.
+An interactive data visualization dashboard exploring Spotify's Top 10,000 most popular songs, spanning 73 years of music history from 1952 to 2025.
+
+**Live Demo**: [aref-vc.github.io/spotify-top-10k](https://aref-vc.github.io/spotify-top-10k/)
 
 ## Key Insights
 
@@ -14,7 +16,7 @@ A data visualization dashboard exploring Spotify's Top 10,000 most popular songs
 | Explicit Content | 26% |
 | Average Duration | 3:33 |
 
-## Sections
+## Sections (8 Sections, 32 Charts)
 
 ### 01 - Overview
 Key statistics, popularity distribution, top 10 tracks, album type breakdown.
@@ -28,6 +30,18 @@ Tracks by decade, era dominance visualization, longevity champions (oldest popul
 ### 04 - Music Characteristics
 Duration distribution, explicit content trends, duration vs popularity scatter, most re-released tracks (ISRC duplicates).
 
+### 05 - Title Intelligence
+Keyword frequency analysis, title length patterns, naming conventions (feat., remix, etc.), title evolution by decade.
+
+### 06 - Correlation Discovery
+Duration sweet spot analysis, collaboration ROI, album type performance comparison, explicit content impact.
+
+### 07 - Release Intelligence
+Monthly seasonality patterns, day-of-week release trends, recency bias analysis, track age vs chart position.
+
+### 08 - Deep Patterns
+Duplicate anatomy, artist collaboration network (chord diagram), decade DNA profiles, breakout track signals (95+ popularity).
+
 ## Tech Stack
 
 | Component | Technology |
@@ -37,6 +51,7 @@ Duration distribution, explicit content trends, duration vs popularity scatter, 
 | Styling | CSS Custom Properties |
 | Data Pipeline | Node.js |
 | Theme | Electric Dark |
+| Hosting | GitHub Pages |
 
 ## Quick Start
 
@@ -60,10 +75,14 @@ open index.html
 │   ├── utils.js            # D3 helpers
 │   ├── filters.js          # Filter management
 │   └── sections/
-│       ├── hero.js         # Section 1 (4 charts)
-│       ├── artists.js      # Section 2 (4 charts)
-│       ├── timeline.js     # Section 3 (4 charts)
-│       └── characteristics.js  # Section 4 (4 charts)
+│       ├── hero.js             # Section 1 (4 charts)
+│       ├── artists.js          # Section 2 (4 charts)
+│       ├── timeline.js         # Section 3 (4 charts)
+│       ├── characteristics.js  # Section 4 (4 charts)
+│       ├── semantics.js        # Section 5 (4 charts)
+│       ├── correlations.js     # Section 6 (4 charts)
+│       ├── release.js          # Section 7 (4 charts)
+│       └── patterns.js         # Section 8 (4 charts)
 └── Dataset/
     └── spotify-top-10k-songs.json
 ```
@@ -84,6 +103,12 @@ open index.html
 - Firefox 88+
 - Safari 14+
 - Edge 90+
+
+## Documentation
+
+- [ARCHITECTURE.md](ARCHITECTURE.md) - System design and chart patterns
+- [DATASET.md](DATASET.md) - Data schema and statistics
+- [CLAUDE.md](CLAUDE.md) - Claude Code configuration
 
 ## Data Source
 
