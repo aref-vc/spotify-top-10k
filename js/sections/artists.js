@@ -362,6 +362,25 @@ function renderFeatured() {
     .style('font-family', Utils.font)
     .style('font-size', '0.6rem')
     .text(d => d.name.length > 15 ? d.name.substring(0, 15) + '...' : d.name);
+
+  // Value labels at end of lollipops
+  g.selectAll('.value-label')
+    .data(featured)
+    .join('text')
+    .attr('class', 'value-label')
+    .attr('x', d => xScale(d.featuredIn) + 12)
+    .attr('y', d => yScale(d.name) + yScale.bandwidth() / 2)
+    .attr('dominant-baseline', 'middle')
+    .attr('fill', Utils.colors.cyan)
+    .style('font-family', Utils.font)
+    .style('font-size', '0.6rem')
+    .style('font-weight', '600')
+    .style('opacity', 0)
+    .text(d => d.featuredIn)
+    .transition()
+    .duration(400)
+    .delay((d, i) => i * 40 + 600)
+    .style('opacity', 1);
 }
 
 window.initArtists = initArtists;

@@ -214,6 +214,43 @@ function renderExplicitTrend() {
     .duration(400)
     .delay((d, i) => 800 + i * 80)
     .attr('r', 5);
+
+  // Value labels on top of bars
+  g.selectAll('.bar-value')
+    .data(data)
+    .join('text')
+    .attr('class', 'bar-value')
+    .attr('x', d => xScale(d.label) + xScale.bandwidth() / 2)
+    .attr('y', d => yScale(d.explicitPercent) - 15)
+    .attr('text-anchor', 'middle')
+    .attr('fill', Utils.colors.coral)
+    .style('font-family', Utils.font)
+    .style('font-size', '0.7rem')
+    .style('font-weight', '600')
+    .style('opacity', 0)
+    .text(d => `${d.explicitPercent}%`)
+    .transition()
+    .duration(400)
+    .delay((d, i) => i * 80 + 600)
+    .style('opacity', 1);
+
+  // Track count labels below bars
+  g.selectAll('.count-label')
+    .data(data)
+    .join('text')
+    .attr('class', 'count-label')
+    .attr('x', d => xScale(d.label) + xScale.bandwidth() / 2)
+    .attr('y', dims.innerHeight - 5)
+    .attr('text-anchor', 'middle')
+    .attr('fill', Utils.colors.text.tertiary)
+    .style('font-family', Utils.font)
+    .style('font-size', '0.5rem')
+    .style('opacity', 0)
+    .text(d => `${Utils.formatNumber(d.explicitCount)}/${Utils.formatNumber(d.count)}`)
+    .transition()
+    .duration(400)
+    .delay((d, i) => i * 80 + 800)
+    .style('opacity', 0.8);
 }
 
 // Chart 15: Duration vs Popularity (Scatter)

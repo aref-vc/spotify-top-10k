@@ -83,6 +83,25 @@ function renderDurationSweet() {
     .attr('y', d => yScale(d.avgPopularity))
     .attr('height', d => dims.innerHeight - yScale(d.avgPopularity));
 
+  // Value labels on top of bars (show every other to avoid crowding)
+  g.selectAll('.bar-value')
+    .data(data.filter((d, i) => i % 2 === 0 || d.label === optimal.label))
+    .join('text')
+    .attr('class', 'bar-value')
+    .attr('x', d => xScale(d.label) + xScale.bandwidth() / 2)
+    .attr('y', d => yScale(d.avgPopularity) - 5)
+    .attr('text-anchor', 'middle')
+    .attr('fill', d => d.label === optimal.label ? Utils.colors.primary : Utils.colors.text.secondary)
+    .style('font-family', Utils.font)
+    .style('font-size', '0.55rem')
+    .style('font-weight', d => d.label === optimal.label ? '700' : '500')
+    .style('opacity', 0)
+    .text(d => d.avgPopularity.toFixed(1))
+    .transition()
+    .duration(400)
+    .delay((d, i) => i * 60 + 600)
+    .style('opacity', 1);
+
   // Optimal marker annotation
   const optimalX = xScale(optimal.label) + xScale.bandwidth() / 2;
   const optimalY = yScale(optimal.avgPopularity);

@@ -78,21 +78,43 @@ function renderMonthlySeasonality() {
     .attr('y', d => yScale(d.count))
     .attr('height', d => dims.innerHeight - yScale(d.count));
 
-  // Peak annotation
-  g.append('text')
-    .attr('x', xScale(peak.label) + xScale.bandwidth() / 2)
-    .attr('y', yScale(peak.count) - 10)
+  // Value labels on top of bars
+  g.selectAll('.bar-value')
+    .data(data)
+    .join('text')
+    .attr('class', 'bar-value')
+    .attr('x', d => xScale(d.label) + xScale.bandwidth() / 2)
+    .attr('y', d => yScale(d.count) - 8)
     .attr('text-anchor', 'middle')
-    .attr('fill', Utils.colors.primary)
+    .attr('fill', d => d.label === peak.label ? Utils.colors.primary : Utils.colors.text.secondary)
     .style('font-family', Utils.font)
-    .style('font-size', '0.65rem')
-    .style('font-weight', '600')
+    .style('font-size', '0.55rem')
+    .style('font-weight', d => d.label === peak.label ? '700' : '500')
     .style('opacity', 0)
-    .text(`${Utils.formatNumber(peak.count)}`)
+    .text(d => Utils.formatNumber(d.count))
     .transition()
-    .delay(1000)
     .duration(400)
+    .delay((d, i) => i * 50 + 600)
     .style('opacity', 1);
+
+  // Percent labels inside bars (show for taller bars)
+  g.selectAll('.percent-label')
+    .data(data)
+    .join('text')
+    .attr('class', 'percent-label')
+    .attr('x', d => xScale(d.label) + xScale.bandwidth() / 2)
+    .attr('y', d => yScale(d.count) + 15)
+    .attr('text-anchor', 'middle')
+    .attr('fill', Utils.colors.bg.primary)
+    .style('font-family', Utils.font)
+    .style('font-size', '0.5rem')
+    .style('font-weight', '500')
+    .style('opacity', 0)
+    .text(d => `${d.percent}%`)
+    .transition()
+    .duration(400)
+    .delay((d, i) => i * 50 + 700)
+    .style('opacity', d => (dims.innerHeight - yScale(d.count)) > 25 ? 0.9 : 0);
 }
 
 // Chart 26: Day-of-Week Patterns
@@ -158,25 +180,43 @@ function renderDayOfWeek() {
     .attr('y', d => yScale(d.count))
     .attr('height', d => dims.innerHeight - yScale(d.count));
 
-  // Friday highlight annotation
-  const fridayData = reordered.find(d => d.label === 'Fri');
-  if (fridayData) {
-    const fridayPercent = Math.round(100 * fridayData.count / total);
-    g.append('text')
-      .attr('x', xScale('Fri') + xScale.bandwidth() / 2)
-      .attr('y', yScale(fridayData.count) - 10)
-      .attr('text-anchor', 'middle')
-      .attr('fill', Utils.colors.primary)
-      .style('font-family', Utils.font)
-      .style('font-size', '0.7rem')
-      .style('font-weight', '600')
-      .style('opacity', 0)
-      .text(`${fridayPercent}%`)
-      .transition()
-      .delay(1000)
-      .duration(400)
-      .style('opacity', 1);
-  }
+  // Value labels on top of bars
+  g.selectAll('.bar-value')
+    .data(reordered)
+    .join('text')
+    .attr('class', 'bar-value')
+    .attr('x', d => xScale(d.label) + xScale.bandwidth() / 2)
+    .attr('y', d => yScale(d.count) - 8)
+    .attr('text-anchor', 'middle')
+    .attr('fill', d => d.label === peak.label ? Utils.colors.primary : Utils.colors.text.secondary)
+    .style('font-family', Utils.font)
+    .style('font-size', '0.6rem')
+    .style('font-weight', d => d.label === peak.label ? '700' : '500')
+    .style('opacity', 0)
+    .text(d => Utils.formatNumber(d.count))
+    .transition()
+    .duration(400)
+    .delay((d, i) => i * 80 + 600)
+    .style('opacity', 1);
+
+  // Percent labels inside bars
+  g.selectAll('.percent-label')
+    .data(reordered)
+    .join('text')
+    .attr('class', 'percent-label')
+    .attr('x', d => xScale(d.label) + xScale.bandwidth() / 2)
+    .attr('y', d => yScale(d.count) + 18)
+    .attr('text-anchor', 'middle')
+    .attr('fill', Utils.colors.bg.primary)
+    .style('font-family', Utils.font)
+    .style('font-size', '0.55rem')
+    .style('font-weight', '600')
+    .style('opacity', 0)
+    .text(d => `${Math.round(100 * d.count / total)}%`)
+    .transition()
+    .duration(400)
+    .delay((d, i) => i * 80 + 700)
+    .style('opacity', d => (dims.innerHeight - yScale(d.count)) > 30 ? 0.9 : 0);
 
   // Title annotation
   g.append('text')

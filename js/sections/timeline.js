@@ -87,7 +87,7 @@ function renderTimelineChart() {
     .attr('y', d => yScale(d.count))
     .attr('height', d => dims.innerHeight - yScale(d.count));
 
-  // Labels on top of bars
+  // Count labels on top of bars
   g.selectAll('.bar-label')
     .data(data)
     .join('text')
@@ -95,15 +95,42 @@ function renderTimelineChart() {
     .attr('x', d => xScale(d.label) + xScale.bandwidth() / 2)
     .attr('y', d => yScale(d.count) - 8)
     .attr('text-anchor', 'middle')
-    .attr('fill', Utils.colors.text.secondary)
+    .attr('fill', Utils.colors.text.primary)
     .style('font-family', Utils.font)
-    .style('font-size', '0.65rem')
+    .style('font-size', '0.7rem')
+    .style('font-weight', '600')
     .style('opacity', 0)
     .text(d => Utils.formatNumber(d.count))
     .transition()
     .duration(400)
     .delay((d, i) => i * 80 + 600)
     .style('opacity', 1);
+
+  // Percentage labels inside bars (for decades with enough space)
+  const total = data.reduce((sum, d) => sum + d.count, 0);
+  g.selectAll('.percent-label')
+    .data(data)
+    .join('text')
+    .attr('class', 'percent-label')
+    .attr('x', d => xScale(d.label) + xScale.bandwidth() / 2)
+    .attr('y', d => {
+      const barHeight = dims.innerHeight - yScale(d.count);
+      return barHeight > 30 ? yScale(d.count) + 20 : yScale(d.count) + barHeight / 2;
+    })
+    .attr('text-anchor', 'middle')
+    .attr('fill', Utils.colors.bg.primary)
+    .style('font-family', Utils.font)
+    .style('font-size', '0.55rem')
+    .style('font-weight', '500')
+    .style('opacity', 0)
+    .text(d => {
+      const percent = Math.round(100 * d.count / total);
+      return percent >= 1 ? `${percent}%` : '';
+    })
+    .transition()
+    .duration(400)
+    .delay((d, i) => i * 80 + 800)
+    .style('opacity', d => (dims.innerHeight - yScale(d.count)) > 25 ? 1 : 0);
 }
 
 // Chart 10: Era Dominance (Stacked percentage)

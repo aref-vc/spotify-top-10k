@@ -115,6 +115,44 @@ function renderPopularityDist() {
     .attr('y', d => yScale(d.count))
     .attr('height', d => dims.innerHeight - yScale(d.count));
 
+  // Value labels on top of bars
+  g.selectAll('.bar-value')
+    .data(data)
+    .join('text')
+    .attr('class', 'bar-value')
+    .attr('x', d => xScale(d.range) + xScale.bandwidth() / 2)
+    .attr('y', d => yScale(d.count) - 8)
+    .attr('text-anchor', 'middle')
+    .attr('fill', Utils.colors.text.primary)
+    .style('font-family', Utils.font)
+    .style('font-size', '0.65rem')
+    .style('font-weight', '600')
+    .style('opacity', 0)
+    .text(d => Utils.formatNumber(d.count))
+    .transition()
+    .duration(400)
+    .delay((d, i) => i * 100 + 600)
+    .style('opacity', 1);
+
+  // Percent labels inside bars
+  g.selectAll('.percent-label')
+    .data(data)
+    .join('text')
+    .attr('class', 'percent-label')
+    .attr('x', d => xScale(d.range) + xScale.bandwidth() / 2)
+    .attr('y', d => yScale(d.count) + 18)
+    .attr('text-anchor', 'middle')
+    .attr('fill', Utils.colors.bg.primary)
+    .style('font-family', Utils.font)
+    .style('font-size', '0.55rem')
+    .style('font-weight', '500')
+    .style('opacity', 0)
+    .text(d => `${d.percent}%`)
+    .transition()
+    .duration(400)
+    .delay((d, i) => i * 100 + 700)
+    .style('opacity', d => (dims.innerHeight - yScale(d.count)) > 25 ? 1 : 0);
+
   // X axis label
   g.append('text')
     .attr('x', dims.innerWidth / 2)
