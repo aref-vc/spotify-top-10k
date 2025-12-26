@@ -316,7 +316,7 @@ function renderNamingEvolution() {
   if (!container) return;
 
   const data = DATA.titleAnalysis.evolution;
-  const dims = Utils.getChartDimensions(container, { left: 50, right: 80, bottom: 60 });
+  const dims = Utils.getChartDimensions(container, { left: 50, right: 100, bottom: 60 });
   const { svg, g } = Utils.createSvg(container, dims);
 
   const xScale = d3.scaleBand()
@@ -326,18 +326,34 @@ function renderNamingEvolution() {
 
   // Multi-line chart for different metrics
   const metrics = [
-    { key: 'avgLength', label: 'Avg Length', color: Utils.colors.primary, max: 30 },
-    { key: 'featPercent', label: 'Feat. %', color: Utils.colors.cyan, max: 20 },
-    { key: 'parentheticalPercent', label: '(...) %', color: Utils.colors.amber, max: 50 }
+    { key: 'avgLength', label: 'Avg Length', color: Utils.colors.primary, max: 30, unit: ' chars' },
+    { key: 'featPercent', label: 'Feat. %', color: Utils.colors.cyan, max: 25, unit: '%' },
+    { key: 'parentheticalPercent', label: '(...) %', color: Utils.colors.amber, max: 50, unit: '%' }
   ];
 
-  // Create a Y scale for each metric (normalized)
+  // Create a Y scale for each metric (normalized to 0-100)
   const yScale = d3.scaleLinear()
     .domain([0, 100])
     .range([dims.innerHeight, 0]);
 
   // Grid
   Utils.addGridLines(g, xScale, yScale, dims.innerWidth, dims.innerHeight, { y: true });
+
+  // Y axis
+  const yAxis = g.append('g')
+    .call(d3.axisLeft(yScale).ticks(5).tickFormat(d => `${d}%`));
+  Utils.styleAxis(yAxis, { hideAxisLine: true });
+
+  // Y axis label
+  g.append('text')
+    .attr('transform', 'rotate(-90)')
+    .attr('x', -dims.innerHeight / 2)
+    .attr('y', -38)
+    .attr('text-anchor', 'middle')
+    .attr('fill', Utils.colors.text.tertiary)
+    .style('font-family', Utils.font)
+    .style('font-size', '0.6rem')
+    .text('Normalized Scale');
 
   // X axis
   const xAxis = g.append('g')
@@ -369,7 +385,7 @@ function renderNamingEvolution() {
       .delay(mi * 200)
       .attr('stroke-dashoffset', 0);
 
-    // Points
+    // Points (larger for better interaction)
     g.selectAll(`.point-${metric.key}`)
       .data(data)
       .join('circle')
@@ -378,38 +394,72 @@ function renderNamingEvolution() {
       .attr('cy', d => yScale(d[metric.key] / metric.max * 100))
       .attr('r', 0)
       .attr('fill', metric.color)
+      .attr('stroke', Utils.colors.bg.primary)
+      .attr('stroke-width', 2)
+      .style('cursor', 'pointer')
       .on('mouseenter', (event, d) => {
+        d3.select(event.target).attr('r', 10);
         Utils.showTooltip(`
           <div class="tooltip-title">${d.label}</div>
-          <div class="tooltip-value">${metric.label}: ${d[metric.key]}${metric.key.includes('Percent') ? '%' : ''}</div>
-          <div class="tooltip-value">Tracks: ${DATA.byDecade.find(dec => dec.label === d.label)?.count || 'N/A'}</div>
+          <div class="tooltip-value" style="color:${metric.color}">${metric.label}: ${d[metric.key]}${metric.unit}</div>
+          <div class="tooltip-value">Tracks: ${Utils.formatNumber(DATA.byDecade.find(dec => dec.label === d.label)?.count || 0)}</div>
         `, event);
       })
-      .on('mouseleave', () => Utils.hideTooltip())
+      .on('mouseleave', (event) => {
+        d3.select(event.target).attr('r', 7);
+        Utils.hideTooltip();
+      })
       .transition()
       .duration(400)
       .delay((d, i) => mi * 200 + i * 50 + 800)
-      .attr('r', 5);
+      .attr('r', 7);
+
+    // Value labels at end of each line (last data point)
+    const lastPoint = data[data.length - 1];
+    g.append('text')
+      .attr('x', xScale(lastPoint.label) + xScale.bandwidth() / 2 + 12)
+      .attr('y', yScale(lastPoint[metric.key] / metric.max * 100))
+      .attr('dominant-baseline', 'middle')
+      .attr('fill', metric.color)
+      .style('font-family', Utils.font)
+      .style('font-size', '0.6rem')
+      .style('font-weight', '600')
+      .style('opacity', 0)
+      .text(`${lastPoint[metric.key]}${metric.unit}`)
+      .transition()
+      .delay(mi * 200 + 1200)
+      .duration(400)
+      .style('opacity', 1);
   });
 
   // Legend
   const legendG = g.append('g')
-    .attr('transform', `translate(${dims.innerWidth + 10}, 20)`);
+    .attr('transform', `translate(${dims.innerWidth + 10}, ${dims.innerHeight / 2 - 30})`);
 
   metrics.forEach((metric, i) => {
     const itemG = legendG.append('g')
-      .attr('transform', `translate(0, ${i * 22})`);
+      .attr('transform', `translate(0, ${i * 25})`);
+
+    itemG.append('line')
+      .attr('x1', 0)
+      .attr('x2', 20)
+      .attr('y1', 0)
+      .attr('y2', 0)
+      .attr('stroke', metric.color)
+      .attr('stroke-width', 2.5);
 
     itemG.append('circle')
-      .attr('r', 5)
+      .attr('cx', 10)
+      .attr('cy', 0)
+      .attr('r', 4)
       .attr('fill', metric.color);
 
     itemG.append('text')
-      .attr('x', 12)
+      .attr('x', 28)
       .attr('y', 4)
       .attr('fill', Utils.colors.text.secondary)
       .style('font-family', Utils.font)
-      .style('font-size', '0.6rem')
+      .style('font-size', '0.55rem')
       .text(metric.label);
   });
 }
