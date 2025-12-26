@@ -3,7 +3,7 @@ node_modules/
 venv/
 
 # Build outputs (large generated files)
-js/data.js
+# js/data.js  # Needed for GitHub Pages deployment
 
 # IDE
 .idea/
