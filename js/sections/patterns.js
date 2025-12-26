@@ -397,7 +397,7 @@ function renderBreakoutSignals() {
     .attr('x2', dims.innerWidth - 20)
     .attr('y1', startY + 12)
     .attr('y2', startY + 12)
-    .attr('stroke', Utils.colors.border.subtle)
+    .attr('stroke', Utils.colors.text.tertiary)
     .attr('stroke-width', 1);
 
   // Rows

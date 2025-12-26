@@ -414,20 +414,22 @@ function renderNamingEvolution() {
       .delay((d, i) => mi * 200 + i * 50 + 800)
       .attr('r', 7);
 
-    // Value labels at end of each line (last data point)
-    const lastPoint = data[data.length - 1];
-    g.append('text')
-      .attr('x', xScale(lastPoint.label) + xScale.bandwidth() / 2 + 12)
-      .attr('y', yScale(lastPoint[metric.key] / metric.max * 100))
-      .attr('dominant-baseline', 'middle')
+    // Value labels at each data point
+    g.selectAll(`.value-${metric.key}`)
+      .data(data)
+      .join('text')
+      .attr('class', `value-${metric.key}`)
+      .attr('x', d => xScale(d.label) + xScale.bandwidth() / 2)
+      .attr('y', d => yScale(d[metric.key] / metric.max * 100) - 12)
+      .attr('text-anchor', 'middle')
       .attr('fill', metric.color)
       .style('font-family', Utils.font)
-      .style('font-size', '0.6rem')
+      .style('font-size', '0.5rem')
       .style('font-weight', '600')
       .style('opacity', 0)
-      .text(`${lastPoint[metric.key]}${metric.unit}`)
+      .text(d => metric.key.includes('Percent') ? `${d[metric.key]}%` : d[metric.key])
       .transition()
-      .delay(mi * 200 + 1200)
+      .delay((d, i) => mi * 200 + i * 50 + 1000)
       .duration(400)
       .style('opacity', 1);
   });
