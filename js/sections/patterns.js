@@ -341,9 +341,22 @@ function renderBreakoutSignals() {
   const container = document.getElementById('breakout-content');
   if (!container) return;
 
-  const breakout = DATA.deepPatterns.breakoutProfile;
+  const breakout = DATA.deepPatterns?.breakoutProfile;
   const dims = Utils.getChartDimensions(container);
   const { svg, g } = Utils.createSvg(container, dims);
+
+  // Guard against missing data
+  if (!breakout || !breakout.characteristics || !breakout.comparison) {
+    g.append('text')
+      .attr('x', dims.innerWidth / 2)
+      .attr('y', dims.innerHeight / 2)
+      .attr('text-anchor', 'middle')
+      .attr('fill', Utils.colors.text.tertiary)
+      .style('font-family', Utils.font)
+      .style('font-size', '0.75rem')
+      .text('No breakout data available');
+    return;
+  }
 
   // Header
   g.append('text')
